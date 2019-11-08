@@ -16,6 +16,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Created by LuoWen on 2015/10/27.
@@ -73,6 +74,15 @@ public class UpdateManager {
         this.callbackContext = callbackContext;
         this.updateXmlUrl = args.getString(0);
         this.options = args.getJSONObject(1);
+        return this;
+    }
+
+    public UpdateManager options(JSONObject args, CallbackContext callbackContext)
+            throws JSONException {
+        // this.args = args;
+        this.callbackContext = callbackContext;
+        // this.updateXmlUrl = args.getString(0);
+        this.options = args; // 其他选项 @dicl 暂未使用
         return this;
     }
 
@@ -219,6 +229,7 @@ public class UpdateManager {
             //Implemented in DownloadHandler.java
         }
     };
+
     /**
      * 重新下载
      * Download again
@@ -230,6 +241,7 @@ public class UpdateManager {
             mHandler.sendEmptyMessage(Constants.DOWNLOAD_CLICK_START);
         }
     };
+
     /**
      * 转到后台更新
      * Update in background
@@ -250,6 +262,14 @@ public class UpdateManager {
         }
     };
 
+    // @author dicl 20191012
+    private OnClickListener downloadDirectlyDialogOnClick = new OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            // do nothing here
+        }
+    };
+
     /**
      * 下载apk文件
      *
@@ -265,4 +285,51 @@ public class UpdateManager {
         // new Thread(downloadApkThread).start();
     }
 
+    /**
+     * 根据指定的下载选项（远端）下载apk，相较于downloadApk，去掉checkUpdateThread检测版本的过程
+     * @author dicl 20191012 on YYCMedia(https://yycmedia.cn)
+     * @param downloadOptions 下载信息的JSON对象 e.g. {version:4329,name:'yourAppName',url:'https://yycmedia.cn/download/test_app.apk'}
+     */
+    public void installFromRemote(JSONObject downloadOptions) {
+        boolean skipProgressDialog = false;
+        try {
+            skipProgressDialog = options.getBoolean("skipProgressDialog");
+        } catch (JSONException e) {}
+
+        if (isDownloading) {
+            msgBox.showDownloadDialog(null, null, null, !skipProgressDialog);
+            mHandler.sendEmptyMessage(Constants.VERSION_UPDATING);
+        } else {
+            LOG.d(TAG, "installApk");
+           
+            isDownloading = true;
+
+            // 显示下载对话框（供用户选择）
+            Map<String, Object> ret = msgBox.showDownloadDialog(
+                downloadDialogOnClickNeg,
+                null, 
+                downloadDialogOnClickNeu,
+                !skipProgressDialog);
+
+            ProgressBar mProgress = (ProgressBar) ret.get("progress");
+            AlertDialog mDownloadDialog = (AlertDialog) ret.get("dialog");
+
+            LOG.d(TAG, "installApk" + mProgress);
+
+            // 手动组装一个HsMap对象，方便调用其他类、方法
+            HashMap<String, String> downloadHashMap = new HashMap();
+            try {
+                downloadHashMap.put("version", downloadOptions.getString("version")); //versionCode 该属性不重要，因为不需要比对版本号了，但是为何格式，这里予以设置
+                downloadHashMap.put("name", downloadOptions.getString("name"));
+                downloadHashMap.put("url", downloadOptions.getString("url"));
+            } catch (JSONException e) {
+                mHandler.sendEmptyMessage(Constants.VERSION_RESOLVE_FAIL);
+                return;
+            }
+            
+            // 启动新线程下载软件
+            downloadApkThread = new DownloadApkThread(mContext, mHandler, mProgress, mDownloadDialog, downloadHashMap, options);
+            this.cordova.getThreadPool().execute(downloadApkThread);
+        }
+    }
 }

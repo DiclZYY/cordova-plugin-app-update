@@ -1,17 +1,47 @@
 {
-  "name": "cordova-plugin-app-update",
-  "version": "2.0.2",
-  "description": "Cordova App Update",
+  "_from": "cordova-plugin-app-update",
+  "_id": "cordova-plugin-app-update@2.0.2",
+  "_inBundle": false,
+  "_integrity": "sha1-mh7ZyJAnOQFgH2PH0e9XJpfH6YE=",
+  "_location": "/cordova-plugin-app-update",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-app-update",
+    "name": "cordova-plugin-app-update",
+    "escapedName": "cordova-plugin-app-update",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npm.taobao.org/cordova-plugin-app-update/download/cordova-plugin-app-update-2.0.2.tgz",
+  "_shasum": "9a1ed9c890273901601f63c7d1ef572697c7e981",
+  "_spec": "cordova-plugin-app-update",
+  "_where": "d:\\wamp64\\www\\hiking\\appcordova",
+  "author": {
+    "name": "vaenow"
+  },
+  "bugs": {
+    "url": "https://github.com/vaenow/cordova-plugin-app-update/issues"
+  },
+  "bundleDependencies": false,
   "cordova": {
     "id": "cordova-plugin-app-update",
     "platforms": [
       "android"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vaenow/cordova-plugin-app-update.git"
+  "deprecated": false,
+  "description": "Cordova App Update",
+  "devDependencies": {
+    "jshint": "^2.6.0"
   },
+  "homepage": "https://github.com/vaenow/cordova-plugin-app-update#readme",
   "keywords": [
     "cordova",
     "app",
@@ -22,17 +52,15 @@
     "ecosystem:cordova",
     "cordova-android"
   ],
-  "author": "vaenow",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/vaenow/cordova-plugin-app-update/issues"
+  "name": "cordova-plugin-app-update",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaenow/cordova-plugin-app-update.git"
   },
   "scripts": {
-    "test": "npm run jshint",
-    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src && node node_modules/jshint/bin/jshint tests"
+    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src && node node_modules/jshint/bin/jshint tests",
+    "test": "npm run jshint"
   },
-  "homepage": "https://github.com/vaenow/cordova-plugin-app-update#readme",
-  "devDependencies": {
-    "jshint": "^2.6.0"
-  }
+  "version": "2.0.2"
 }

@@ -50,7 +50,6 @@ public class DownloadApkThread implements Runnable {
         this.downloadHandler = new DownloadHandler(mContext, mProgress, mDownloadDialog, this.mSavePath, mHashMap);
     }
 
-
     @Override
     public void run() {
         downloadAndInstall();

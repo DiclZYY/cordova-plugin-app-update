@@ -102,7 +102,7 @@ public class DownloadHandler extends Handler {
 
         // 通过Intent安装APK文件
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-            LOG.d(TAG, "Build SDK Greater than or equal to Nougat");
+            LOG.d(TAG, "Build SDK Greater than or equal to Nougat");//Android 7.0+ 的安装
             String applicationId = (String) BuildHelper.getBuildConfigValue((Activity) mContext, "APPLICATION_ID");
             Uri apkUri = FileProvider.getUriForFile(mContext, applicationId + ".appupdate.provider", apkFile);
             Intent i = new Intent(Intent.ACTION_INSTALL_PACKAGE);

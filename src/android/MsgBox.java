@@ -80,7 +80,9 @@ public class MsgBox {
             //builder.setNegativeButton(msgHelper.getString("update_cancel"), onClickListener);
             //转到后台更新
             builder.setNegativeButton(msgHelper.getString(MsgHelper.UPDATE_BG), onClickListenerNeg);
+            // 手动安装
             builder.setNeutralButton(msgHelper.getString(MsgHelper.DOWNLOAD_COMPLETE_NEU_BTN), onClickListenerNeu);
+            // 重新下载
             builder.setPositiveButton(msgHelper.getString(MsgHelper.DOWNLOAD_COMPLETE_POS_BTN), onClickListenerPos);
             downloadDialog = builder.create();
         }

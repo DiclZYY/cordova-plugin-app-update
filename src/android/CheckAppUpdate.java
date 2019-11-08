@@ -28,6 +28,12 @@ public class CheckAppUpdate extends CordovaPlugin {
             if (verifyInstallPermission() && verifyOtherPermissions())
                 getUpdateManager().checkUpdate();
             return true;
+        } else if (action.equals("ccInstall")) {
+            // 自动下载和安装 args第一个对象为下载信息对象，第二个为其他控制选项对象
+            getUpdateManager().options(args.getJSONObject(1), callbackContext);
+            if (verifyInstallPermission() && verifyOtherPermissions())
+                getUpdateManager().installFromRemote(args.getJSONObject(0));
+            return true;
         }
 
         callbackContext.error(Utils.makeJSON(Constants.NO_SUCH_METHOD, "No such method: " + action));
