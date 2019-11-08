@@ -131,8 +131,14 @@ public class CheckAppUpdate extends CordovaPlugin {
                 return;
             }
 
-            if (verifyOtherPermissions())
-                getUpdateManager().checkUpdate();
+            if (verifyOtherPermissions()) {
+                if (firstCheckPermissionAction == "checkUpdate") {
+                    getUpdateManager().checkUpdate();
+                } else if (firstCheckPermissionAction == "installFromRemote") {
+                    getUpdateManager().installFromRemote(onlyDownloadParams);
+                }
+            }
+//                getUpdateManager().checkUpdate();
         }
         else if (requestCode == UNKNOWN_SOURCES_PERMISSION_REQUEST_CODE) {
             try {
@@ -143,8 +149,15 @@ public class CheckAppUpdate extends CordovaPlugin {
             }
             catch (Settings.SettingNotFoundException e) {}
 
-            if (verifyOtherPermissions())
-                getUpdateManager().checkUpdate();
+            if (verifyOtherPermissions()){
+                if (firstCheckPermissionAction == "checkUpdate") {
+                    getUpdateManager().checkUpdate();
+                } else if (firstCheckPermissionAction == "installFromRemote") {
+                    getUpdateManager().installFromRemote(onlyDownloadParams);
+                }
+            }
+//                getUpdateManager().checkUpdate();
+
         }
     }
 
