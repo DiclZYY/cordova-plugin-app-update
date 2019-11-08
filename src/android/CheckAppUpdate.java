@@ -14,6 +14,7 @@ import org.apache.cordova.BuildHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by LuoWen on 2015/10/27.
@@ -21,18 +22,26 @@ import org.json.JSONException;
 public class CheckAppUpdate extends CordovaPlugin {
     public static final String TAG = "CheckAppUpdate";
 
+    private String firstCheckPermissionAction;
+    private JSONObject onlyDownloadParams;
+
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("checkAppUpdate")) {
+            firstCheckPermissionAction = "checkUpdate";
             getUpdateManager().options(args, callbackContext);
             if (verifyInstallPermission() && verifyOtherPermissions())
                 getUpdateManager().checkUpdate();
             return true;
         } else if (action.equals("ccInstall")) {
+            firstCheckPermissionAction = "installFromRemote";
             // 自动下载和安装 args第一个对象为下载信息对象，第二个为其他控制选项对象
             getUpdateManager().options(args.getJSONObject(1), callbackContext);
             if (verifyInstallPermission() && verifyOtherPermissions())
                 getUpdateManager().installFromRemote(args.getJSONObject(0));
+            else {
+                onlyDownloadParams = args.getJSONObject(0);
+            }
             return true;
         }
 
@@ -77,8 +86,8 @@ public class CheckAppUpdate extends CordovaPlugin {
                 String applicationId = (String) BuildHelper.getBuildConfigValue(cordova.getActivity(), "APPLICATION_ID");
                 Uri packageUri = Uri.parse("package:" + applicationId);
                 Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
-                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    .setData(packageUri);
+                        .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        .setData(packageUri);
                 cordova.setActivityResultCallback(this);
                 cordova.getActivity().startActivityForResult(intent, INSTALL_PERMISSION_REQUEST_CODE);
                 return false;
@@ -150,7 +159,11 @@ public class CheckAppUpdate extends CordovaPlugin {
                 }
             }
 
-            getUpdateManager().checkUpdate();
+            if (firstCheckPermissionAction == "checkUpdate") {
+                getUpdateManager().checkUpdate();
+            } else if (firstCheckPermissionAction == "installFromRemote") {
+                getUpdateManager().installFromRemote(onlyDownloadParams);
+            }
         }
     }
 }
